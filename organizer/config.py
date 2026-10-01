@@ -89,21 +89,30 @@ class ConfigManager:
         """
         Busca si el nombre del archivo contiene alguna palabra clave configurada.
         Usa expresiones regulares para palabras cortas y evitar que "ia" coincida con "historia".
+        Ignora tildes y mayúsculas para mayor precisión.
         """
         import re
-        lower_name = filename.lower()
+        import unicodedata
+        
+        def remove_accents(text: str) -> str:
+            return "".join(c for c in unicodedata.normalize('NFKD', text) if not unicodedata.combining(c))
+
+        # Normalizamos filename (minúsculas y sin tildes)
+        lower_name = remove_accents(filename.lower())
         keyword_rules = self.data.get("keyword_rules", {})
         
         for category, keywords in keyword_rules.items():
             for kw in keywords:
-                kw_lower = kw.lower()
+                # Normalizamos keyword (minúsculas y sin tildes)
+                kw_lower = remove_accents(kw.lower())
+                
                 # Para palabras cortas (<= 3 letras), obligamos a que sean palabras completas
                 if len(kw_lower) <= 3:
                     pattern = r'\b' + re.escape(kw_lower) + r'\b'
                     if re.search(pattern, lower_name, flags=re.UNICODE):
                         return category
                 else:
-                    # Para palabras largas, permitimos coincidencia parcial (ej: "calculo" en "precalculo")
+                    # Para palabras largas, permitimos coincidencia parcial
                     if kw_lower in lower_name:
                         return category
         return None
