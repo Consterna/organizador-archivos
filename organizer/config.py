@@ -45,6 +45,16 @@ class ConfigManager:
         self.ext_to_category = self._build_lookup()
 
     def load(self) -> Dict[str, Any]:
+        import shutil
+        example_path = self.config_path.parent / "config.example.json"
+        
+        # Si no existe config.json, copiar el ejemplo si está disponible
+        if not self.config_path.exists() and example_path.exists():
+            try:
+                shutil.copy(example_path, self.config_path)
+            except Exception:
+                pass
+
         if self.config_path.exists():
             try:
                 with open(self.config_path, "r", encoding="utf-8") as f:
