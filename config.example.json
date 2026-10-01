@@ -1,0 +1,34 @@
+{
+  "source_directory": "C:\\Users\\TU_USUARIO\\Downloads",
+  "target_directory": "C:\\Users\\TU_USUARIO\\Documents",
+  "categories": {
+    "Imagenes": [".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg", ".bmp", ".ico", ".tiff"],
+    "Documentos": [".pdf", ".docx", ".doc", ".xlsx", ".xls", ".pptx", ".ppt", ".txt", ".csv", ".odt", ".epub", ".md", ".log"],
+    "Audio": [".mp3", ".wav", ".aac", ".flac", ".ogg", ".m4a"],
+    "Videos": [".mp4", ".mkv", ".mov", ".avi", ".flv", ".wmv", ".webm"],
+    "Comprimidos": [".zip", ".rar", ".7z", ".tar", ".gz", ".bz2", ".mrpack"],
+    "Juegos y Mods": [".jar"],
+    "Instaladores": [".exe", ".msi", ".iso"],
+    "Codigo": [".py", ".js", ".ts", ".html", ".css", ".json", ".xml", ".sql", ".cpp", ".c", ".java", ".rs", ".go"]
+  },
+  "keyword_rules": {
+    "Universidad/Calculo": ["calculo", "integral", "derivada"],
+    "Universidad/Programacion": ["python", "java", "algoritmo"],
+    "Trabajo/Facturas": ["factura", "recibo", "pago", "invoice", "boleta"],
+    "Proyectos/Stream": ["stream", "obs", "overlay", "twitch"]
+  },
+  "default_category": "Otros",
+  "ignored_names": [
+    ".organizer_history.json",
+    "config.json",
+    "desktop.ini",
+    "Thumbs.db",
+    ".DS_Store"
+  ],
+  "ignored_extensions": [
+    ".tmp",
+    ".crdownload",
+    ".part"
+  ],
+  "duplicate_action": "rename"
+}
