@@ -104,16 +104,32 @@ class OrganizerEngine:
 
             target_folder, category = self._determine_target_subfolder(item)
 
-            # Comprobar colisión
+            # Comprobar colisión y manejar duplicados exactos
             potential_dest = target_folder / item.name
             is_dup = False
+            final_dest = potential_dest
+
             if potential_dest.exists():
                 src_hash = compute_file_hash(item)
                 dst_hash = compute_file_hash(potential_dest)
                 if src_hash and dst_hash and src_hash == dst_hash:
                     is_dup = True
-
-            final_dest = get_unique_destination(target_folder, item.name)
+                
+                if is_dup:
+                    action = self.config.data.get("duplicate_action", "rename").lower()
+                    if action == "skip":
+                        continue
+                    elif action == "delete":
+                        # Marcarlo para borrar
+                        final_dest = None
+                    elif action == "overwrite":
+                        final_dest = potential_dest
+                    else:
+                        # Rename
+                        final_dest = get_unique_destination(target_folder, item.name)
+                else:
+                    # No es duplicado exacto, pero hay colisión de nombre -> Siempre renombrar
+                    final_dest = get_unique_destination(target_folder, item.name)
 
             plans.append(FilePlan(
                 source=item,
@@ -135,14 +151,20 @@ class OrganizerEngine:
 
         for p in plans:
             try:
-                # Asegurar que el directorio destino existe
-                p.destination.parent.mkdir(parents=True, exist_ok=True)
-                
-                # Mover el archivo
-                shutil.move(str(p.source), str(p.destination))
-                movements.append((p.source, p.destination))
-                p.status = "SUCCESS"
-                success_count += 1
+                if p.destination is None:
+                    # El plan indica que se debe borrar el archivo original (duplicado)
+                    p.source.unlink(missing_ok=True)
+                    p.status = "DELETED_DUPLICATE"
+                    success_count += 1
+                else:
+                    # Asegurar que el directorio destino existe
+                    p.destination.parent.mkdir(parents=True, exist_ok=True)
+                    
+                    # Mover el archivo
+                    shutil.move(str(p.source), str(p.destination))
+                    movements.append((p.source, p.destination))
+                    p.status = "SUCCESS"
+                    success_count += 1
             except Exception as e:
                 p.status = f"ERROR: {e}"
                 error_count += 1

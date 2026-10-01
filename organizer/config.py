@@ -99,8 +99,8 @@ class ConfigManager:
                 kw_lower = kw.lower()
                 # Para palabras cortas (<= 3 letras), obligamos a que sean palabras completas
                 if len(kw_lower) <= 3:
-                    pattern = r'(?<![a-z0-9])' + re.escape(kw_lower) + r'(?![a-z0-9])'
-                    if re.search(pattern, lower_name):
+                    pattern = r'\b' + re.escape(kw_lower) + r'\b'
+                    if re.search(pattern, lower_name, flags=re.UNICODE):
                         return category
                 else:
                     # Para palabras largas, permitimos coincidencia parcial (ej: "calculo" en "precalculo")

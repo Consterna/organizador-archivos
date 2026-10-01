@@ -34,12 +34,15 @@ def display_plan(plans: list[FilePlan], target_dir: Path):
     for cat, items in sorted(by_cat.items()):
         print(f"\n[{cat}] ({len(items)} archivos):")
         for item in items:
-            dup_tag = f" {Colors.YELLOW}[Duplicado detectado]{Colors.RESET}" if item.is_duplicate else ""
-            try:
-                rel_dest = item.destination.relative_to(target_dir)
-            except ValueError:
-                rel_dest = item.destination
-            print(f"   * {item.source.name}  ->  {Colors.GREEN}{rel_dest}{Colors.RESET}{dup_tag}")
+            if item.destination is None:
+                print(f"   * {item.source.name}  ->  {Colors.RED}[SE ELIMINARÁ - DUPLICADO EXACTO]{Colors.RESET}")
+            else:
+                dup_tag = f" {Colors.YELLOW}[Duplicado detectado]{Colors.RESET}" if item.is_duplicate else ""
+                try:
+                    rel_dest = item.destination.relative_to(target_dir)
+                except ValueError:
+                    rel_dest = item.destination
+                print(f"   * {item.source.name}  ->  {Colors.GREEN}{rel_dest}{Colors.RESET}{dup_tag}")
 
     print(f"\n{Colors.BOLD}Resumen:{Colors.RESET} {len(plans)} archivos listos para organizar en {len(by_cat)} categorías.\n")
 
