@@ -76,7 +76,10 @@ def cmd_organize(source_dir: Path, target_dir: Path, config: ConfigManager, mode
         success(f"Se organizaron exitosamente {succ} archivos.")
         info(f"ID de sesión guardado para Undo: {session_id}")
     if err > 0:
-        error(f"Ocurrieron errores con {err} archivos.")
+        error(f"Ocurrieron errores con {err} archivos:")
+        for p in plans:
+            if p.status.startswith("ERROR"):
+                print(f"   - {Colors.RED}{p.source.name}{Colors.RESET}: {p.status}")
 
 
 def cmd_undo(target_dir: Path):

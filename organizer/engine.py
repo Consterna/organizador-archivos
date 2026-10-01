@@ -110,10 +110,17 @@ class OrganizerEngine:
             final_dest = potential_dest
 
             if potential_dest.exists():
-                src_hash = compute_file_hash(item)
-                dst_hash = compute_file_hash(potential_dest)
-                if src_hash and dst_hash and src_hash == dst_hash:
-                    is_dup = True
+                try:
+                    src_size = item.stat().st_size
+                    dst_size = potential_dest.stat().st_size
+                    
+                    if src_size == dst_size:
+                        src_hash = compute_file_hash(item)
+                        dst_hash = compute_file_hash(potential_dest)
+                        if src_hash and dst_hash and src_hash == dst_hash:
+                            is_dup = True
+                except Exception:
+                    pass
                 
                 if is_dup:
                     action = self.config.data.get("duplicate_action", "rename").lower()

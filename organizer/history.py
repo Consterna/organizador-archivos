@@ -50,6 +50,11 @@ class HistoryManager:
             ]
         }
         history.append(session_data)
+        
+        # Mantener solo las últimas 50 sesiones para evitar archivos gigantes
+        if len(history) > 50:
+            history = history[-50:]
+            
         self._save_history(history)
         return session_id
 

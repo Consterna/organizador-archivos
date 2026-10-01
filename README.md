@@ -25,7 +25,7 @@ Una herramienta de automatización diseñada para organizar tus descargas de for
    - **Simulación (`Dry-Run`):** Puedes ver un resumen de dónde irá cada archivo antes de tocar nada.
    - **Deshacer (`Undo`):** El sistema guarda un registro (`.organizer_history.json`) de la última limpieza. Si te equivocaste, puedes deshacer los movimientos con 1 clic.
    - **Resolución de Colisiones:** Si ya existe un archivo con ese nombre, no lo sobrescribe. Le añade un sufijo respetando extensiones dobles (ej. `archivo (1).tar.gz`).
-   - **Detección de Duplicados Exactos:** Si el archivo ya existe y es idéntico (mismo hash SHA-256), te avisará que es un duplicado en pantalla.
+   - **Detección y Eliminación de Duplicados Exactos:** Si descargas el mismo archivo dos veces, el sistema compara su tamaño y hash (SHA-256). Si son idénticos, **elimina la copia suelta** de tus descargas automáticamente para ahorrar espacio (configurable desde `config.json`).
    - **Exclusión de Temporales:** Ignora automáticamente descargas incompletas (`.crdownload`, `.tmp`).
 
 ---
