@@ -44,10 +44,22 @@ python main.py
 3. **[3] Deshacer (Undo):** Revierte la última organización devolviendo los archivos a su lugar original y borrando las carpetas vacías que se hayan creado.
 4. **[4] Crear Sandbox:** Crea una carpeta de prueba con archivos falsos para que puedas practicar sin miedo.
 
-También puedes ejecutarlo de forma **silenciosa y automática** mediante comandos, ideal para tareas programadas (Cron/Task Scheduler):
+También puedes ejecutarlo de forma **silenciosa y automática** mediante comandos, ignorando las confirmaciones manuales:
 ```bash
 python main.py --run -y
 ```
+
+### 🕒 Automatización en Windows (Task Scheduler)
+Para que tu PC organice tus descargas automáticamente todos los días en segundo plano sin que te des cuenta:
+
+1. Presiona `Win + R`, escribe `taskschd.msc` y presiona Enter.
+2. Haz clic en **"Crear tarea básica..."** en el panel derecho.
+3. Ponle un nombre (ej. `Limpiador de Descargas`) y elige **Diariamente** (o el ciclo que prefieras).
+4. En **Acción**, selecciona **Iniciar un programa**.
+5. En **Programa/script**, escribe `python`.
+6. En **Agregar argumentos**, escribe la ruta completa hacia tu `main.py` seguida de los parámetros de ejecución automática. Ejemplo:
+   `"C:\dev\proyectos\organizador-archivos\main.py" --run -y`
+7. Termina el asistente. ¡Listo! Tu computadora ahora se limpiará a sí misma automáticamente.
 
 ---
 
