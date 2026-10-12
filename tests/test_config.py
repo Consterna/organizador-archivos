@@ -39,4 +39,7 @@ def test_extension_matching(tmp_path: Path) -> None:
     manager = ConfigManager(config_path=tmp_path / "config.json")
     assert manager.get_category_for_ext(".jpg") == "Imagenes"
     assert manager.get_category_for_ext(".JPG") == "Imagenes"  # case insensitive
+    assert manager.get_category_for_ext(".jar") == "Juegos y Mods"
+    assert manager.get_category_for_ext(".mrpack") == "Comprimidos"
+    assert manager.get_category_for_ext(".log") == "Documentos"
     assert manager.get_category_for_ext(".unknown") == "Otros"

@@ -12,10 +12,11 @@ from typing import Any
 DEFAULT_CONFIG: dict[str, Any] = {
     "categories": {
         "Imagenes": [".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg", ".bmp", ".ico", ".tiff"],
-        "Documentos": [".pdf", ".docx", ".doc", ".xlsx", ".xls", ".pptx", ".ppt", ".txt", ".csv", ".odt", ".epub", ".md"],
+        "Documentos": [".pdf", ".docx", ".doc", ".xlsx", ".xls", ".pptx", ".ppt", ".txt", ".csv", ".odt", ".epub", ".md", ".log"],
         "Audio": [".mp3", ".wav", ".aac", ".flac", ".ogg", ".m4a"],
         "Videos": [".mp4", ".mkv", ".mov", ".avi", ".flv", ".wmv", ".webm"],
-        "Comprimidos": [".zip", ".rar", ".7z", ".tar", ".gz", ".bz2"],
+        "Comprimidos": [".zip", ".rar", ".7z", ".tar", ".gz", ".bz2", ".mrpack"],
+        "Juegos y Mods": [".jar"],
         "Instaladores": [".exe", ".msi", ".iso"],
         "Codigo": [".py", ".js", ".ts", ".html", ".css", ".json", ".xml", ".sql", ".cpp", ".c", ".java", ".rs", ".go"],
     },
