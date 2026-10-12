@@ -2,8 +2,8 @@
 Módulo de interfaz de consola y estilos con colores ANSI.
 """
 
-import sys
 import os
+import sys
 
 # Configurar stdout y stderr para UTF-8 en Windows para admitir caracteres y emojis
 if hasattr(sys.stdout, "reconfigure"):
@@ -39,7 +39,7 @@ class Colors:
     RESET = "\033[0m"
 
 
-def print_banner():
+def print_banner() -> None:
     banner = f"""
 {Colors.CYAN}{Colors.BOLD}====================================================
  [📁] ORGANIZADOR INTELIGENTE DE ARCHIVOS v1.0
@@ -48,21 +48,21 @@ def print_banner():
     print(banner)
 
 
-def success(msg: str):
+def success(msg: str) -> None:
     print(f"{Colors.GREEN}[✓] {msg}{Colors.RESET}")
 
 
-def info(msg: str):
+def info(msg: str) -> None:
     print(f"{Colors.BLUE}[i] {msg}{Colors.RESET}")
 
 
-def warning(msg: str):
+def warning(msg: str) -> None:
     print(f"{Colors.YELLOW}[!] {msg}{Colors.RESET}")
 
 
-def error(msg: str):
+def error(msg: str) -> None:
     print(f"{Colors.RED}[x] {msg}{Colors.RESET}")
 
 
-def header(msg: str):
+def header(msg: str) -> None:
     print(f"\n{Colors.BOLD}{Colors.HEADER}--- {msg} ---{Colors.RESET}")

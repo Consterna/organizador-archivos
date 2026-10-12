@@ -3,8 +3,6 @@ Generador de archivos de muestra para pruebas seguras en entorno Sandbox.
 """
 
 from pathlib import Path
-import time
-
 
 SAMPLE_FILES = [
     ("reporte_mensual.docx", "Documento de reporte."),
@@ -33,7 +31,7 @@ SAMPLE_FILES = [
     ("descarga_incompleta.crdownload", "Descarga no terminada que debe ignorarse."),
     ("tarea_matematicas.pdf", "%PDF-1.4 Ejercicios de la universidad."),
     ("factura_luz_agosto.pdf", "%PDF-1.4 Recibo mensual de energía."),
-    ("miniatura_youtube_vlog.png", "PNG_DUMMY_DATA_YOUTUBE")
+    ("miniatura_youtube_vlog.png", "PNG_DUMMY_DATA_YOUTUBE"),
 ]
 
 

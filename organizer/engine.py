@@ -3,12 +3,11 @@ Motor de escaneo, cálculo de rutas, resolución de colisiones y ejecución.
 """
 
 import hashlib
-import os
 import shutil
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Tuple, Optional
+
 from organizer.config import ConfigManager
 from organizer.history import HistoryManager
 
@@ -16,7 +15,7 @@ from organizer.history import HistoryManager
 @dataclass
 class FilePlan:
     source: Path
-    destination: Path
+    destination: Path | None
     category: str
     is_duplicate: bool
     status: str = "PENDING"
@@ -57,7 +56,7 @@ def get_unique_destination(dest_dir: Path, original_filename: str) -> Path:
 
 
 class OrganizerEngine:
-    def __init__(self, source_dir: Path, target_dir: Path, config: ConfigManager, mode: str = "by_category"):
+    def __init__(self, source_dir: Path, target_dir: Path, config: ConfigManager, mode: str = "by_category") -> None:
         self.source_dir = source_dir
         self.target_dir = target_dir
         self.config = config
@@ -65,11 +64,11 @@ class OrganizerEngine:
         # Guardaremos el historial en la carpeta destino para que no se borre si limpiamos descargas
         self.history_mgr = HistoryManager(target_dir)
 
-    def _determine_target_subfolder(self, file_path: Path) -> Tuple[Path, str]:
+    def _determine_target_subfolder(self, file_path: Path) -> tuple[Path, str]:
         """Calcula la subcarpeta destino y la categoría según el modo configurado."""
         # 1. Intentar clasificar por palabra clave (Keyword)
         category = self.config.get_category_by_keyword(file_path.name)
-        
+
         # 2. Fallback a clasificación por extensión
         if not category:
             category = self.config.get_category_for_ext(file_path.suffix)
@@ -88,9 +87,9 @@ class OrganizerEngine:
             # Modo por defecto: by_category
             return self.target_dir / category, category
 
-    def plan(self) -> List[FilePlan]:
+    def plan(self) -> list[FilePlan]:
         """Escanea la carpeta de origen y genera el plan de movimientos."""
-        plans: List[FilePlan] = []
+        plans: list[FilePlan] = []
         if not self.source_dir.exists() or not self.source_dir.is_dir():
             return plans
 
@@ -107,13 +106,13 @@ class OrganizerEngine:
             # Comprobar colisión y manejar duplicados exactos
             potential_dest = target_folder / item.name
             is_dup = False
-            final_dest = potential_dest
+            final_dest: Path | None = potential_dest
 
             if potential_dest.exists():
                 try:
                     src_size = item.stat().st_size
                     dst_size = potential_dest.stat().st_size
-                    
+
                     if src_size == dst_size:
                         src_hash = compute_file_hash(item)
                         dst_hash = compute_file_hash(potential_dest)
@@ -121,9 +120,9 @@ class OrganizerEngine:
                             is_dup = True
                 except Exception:
                     pass
-                
+
                 if is_dup:
-                    action = self.config.data.get("duplicate_action", "rename").lower()
+                    action = str(self.config.data.get("duplicate_action", "rename")).lower()
                     if action == "skip":
                         continue
                     elif action == "delete":
@@ -138,23 +137,25 @@ class OrganizerEngine:
                     # No es duplicado exacto, pero hay colisión de nombre -> Siempre renombrar
                     final_dest = get_unique_destination(target_folder, item.name)
 
-            plans.append(FilePlan(
-                source=item,
-                destination=final_dest,
-                category=category,
-                is_duplicate=is_dup
-            ))
+            plans.append(
+                FilePlan(
+                    source=item,
+                    destination=final_dest,
+                    category=category,
+                    is_duplicate=is_dup,
+                )
+            )
 
         return plans
 
-    def execute(self, plans: List[FilePlan]) -> Tuple[int, int, str]:
+    def execute(self, plans: list[FilePlan]) -> tuple[int, int, str]:
         """
         Ejecuta el plan de movimientos y registra la sesión para poder hacer Undo.
         Retorna (exitosos, errores, session_id).
         """
         success_count = 0
         error_count = 0
-        movements: List[Tuple[Path, Path]] = []
+        movements: list[tuple[Path, Path]] = []
 
         for p in plans:
             try:
@@ -166,7 +167,7 @@ class OrganizerEngine:
                 else:
                     # Asegurar que el directorio destino existe
                     p.destination.parent.mkdir(parents=True, exist_ok=True)
-                    
+
                     # Mover el archivo
                     shutil.move(str(p.source), str(p.destination))
                     movements.append((p.source, p.destination))

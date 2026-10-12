@@ -6,33 +6,34 @@ import json
 import shutil
 import time
 from pathlib import Path
-from typing import List, Dict, Optional, Tuple
+from typing import Any
 
 
 class HistoryManager:
     HISTORY_FILENAME = ".organizer_history.json"
 
-    def __init__(self, target_dir: Path):
+    def __init__(self, target_dir: Path) -> None:
         self.target_dir = target_dir
         self.history_file = target_dir / self.HISTORY_FILENAME
 
-    def _load_history(self) -> List[Dict]:
+    def _load_history(self) -> list[dict[str, Any]]:
         if not self.history_file.exists():
             return []
         try:
-            with open(self.history_file, "r", encoding="utf-8") as f:
-                return json.load(f)
+            with open(self.history_file, encoding="utf-8") as f:
+                data: list[dict[str, Any]] = json.load(f)
+                return data
         except Exception:
             return []
 
-    def _save_history(self, history: List[Dict]):
+    def _save_history(self, history: list[dict[str, Any]]) -> None:
         try:
             with open(self.history_file, "w", encoding="utf-8") as f:
                 json.dump(history, f, indent=2, ensure_ascii=False)
         except Exception as e:
             print(f"Error guardando historial: {e}")
 
-    def record_session(self, movements: List[Tuple[Path, Path]]) -> str:
+    def record_session(self, movements: list[tuple[Path, Path]]) -> str:
         """
         Registra una lista de tuplas (origen, destino) como una sesión de organización.
         """
@@ -47,18 +48,18 @@ class HistoryManager:
             "movements": [
                 {"source": str(src), "destination": str(dst)}
                 for src, dst in movements
-            ]
+            ],
         }
         history.append(session_data)
-        
+
         # Mantener solo las últimas 50 sesiones para evitar archivos gigantes
         if len(history) > 50:
             history = history[-50:]
-            
+
         self._save_history(history)
         return session_id
 
-    def undo_last_session(self) -> Tuple[bool, str, int]:
+    def undo_last_session(self) -> tuple[bool, str, int]:
         """
         Revierte la última sesión registrada en el historial.
         Retorna (éxito, mensaje, cantidad_revertidos).

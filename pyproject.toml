@@ -1,0 +1,33 @@
+[project]
+name = "organizador-archivos"
+version = "1.0.0"
+description = "Herramienta CLI e interactiva para clasificar descargas por palabras clave (RegEx/Unicode), extensión, detección de duplicados SHA-256 y reversión segura (Undo)."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.4.0",
+    "mypy>=1.10.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra -q"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 110
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+check_untyped_defs = true
+warn_unused_ignores = true
+exclude = ["sandbox_test", "sandbox_test_out"]

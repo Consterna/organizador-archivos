@@ -5,29 +5,28 @@ Punto de entrada principal del CLI interactivo y automatizado.
 """
 
 import argparse
-import sys
 from pathlib import Path
+
 from organizer.config import ConfigManager
-from organizer.engine import OrganizerEngine, FilePlan
+from organizer.engine import FilePlan, OrganizerEngine
 from organizer.history import HistoryManager
 from organizer.sandbox import create_sandbox
-from organizer.ui import Colors, print_banner, success, info, warning, error, header
-
+from organizer.ui import Colors, error, header, info, print_banner, success, warning
 
 BASE_DIR = Path(__file__).resolve().parent
 DEFAULT_CONFIG_PATH = BASE_DIR / "config.json"
 DEFAULT_SANDBOX_DIR = BASE_DIR / "sandbox_test"
 
 
-def display_plan(plans: list[FilePlan], target_dir: Path):
+def display_plan(plans: list[FilePlan], target_dir: Path) -> None:
     if not plans:
-        warning(f"No se encontraron archivos para organizar.")
+        warning("No se encontraron archivos para organizar.")
         return
 
     header(f"Plan de Organización ({len(plans)} archivos detectados)")
-    
+
     # Agrupar por categoría
-    by_cat = {}
+    by_cat: dict[str, list[FilePlan]] = {}
     for p in plans:
         by_cat.setdefault(p.category, []).append(p)
 
@@ -47,7 +46,7 @@ def display_plan(plans: list[FilePlan], target_dir: Path):
     print(f"\n{Colors.BOLD}Resumen:{Colors.RESET} {len(plans)} archivos listos para organizar en {len(by_cat)} categorías.\n")
 
 
-def cmd_simulate(source_dir: Path, target_dir: Path, config: ConfigManager, mode: str):
+def cmd_simulate(source_dir: Path, target_dir: Path, config: ConfigManager, mode: str) -> list[FilePlan]:
     info(f"Escaneando directorio: {source_dir.resolve()} (Modo: {mode})")
     info(f"Destino principal: {target_dir.resolve()}")
     engine = OrganizerEngine(source_dir, target_dir, config, mode=mode)
@@ -56,10 +55,10 @@ def cmd_simulate(source_dir: Path, target_dir: Path, config: ConfigManager, mode
     return plans
 
 
-def cmd_organize(source_dir: Path, target_dir: Path, config: ConfigManager, mode: str, confirm_prompt: bool = True):
+def cmd_organize(source_dir: Path, target_dir: Path, config: ConfigManager, mode: str, confirm_prompt: bool = True) -> None:
     engine = OrganizerEngine(source_dir, target_dir, config, mode=mode)
     plans = engine.plan()
-    
+
     if not plans:
         warning(f"No hay archivos para mover en {source_dir}")
         return
@@ -82,22 +81,22 @@ def cmd_organize(source_dir: Path, target_dir: Path, config: ConfigManager, mode
                 print(f"   - {Colors.RED}{p.source.name}{Colors.RESET}: {p.status}")
 
 
-def cmd_undo(target_dir: Path):
+def cmd_undo(target_dir: Path) -> None:
     history_mgr = HistoryManager(target_dir)
-    ok, msg, count = history_mgr.undo_last_session()
+    ok, msg, _count = history_mgr.undo_last_session()
     if ok:
         success(msg)
     else:
         warning(msg)
 
 
-def cmd_create_sandbox(sandbox_dir: Path):
+def cmd_create_sandbox(sandbox_dir: Path) -> None:
     count = create_sandbox(sandbox_dir)
     success(f"Entorno Sandbox creado en: {sandbox_dir.resolve()}")
     info(f"Se crearon {count} archivos de prueba variados para experimentar con seguridad.")
 
 
-def cmd_show_config(config: ConfigManager):
+def cmd_show_config(config: ConfigManager) -> None:
     header("Reglas y Categorías Actuales")
     for cat, exts in config.data.get("categories", {}).items():
         print(f"  {Colors.CYAN}{cat:15}{Colors.RESET} : {', '.join(exts)}")
@@ -106,17 +105,17 @@ def cmd_show_config(config: ConfigManager):
     print(f"  {Colors.YELLOW}Categoría por defecto{Colors.RESET}: {config.data.get('default_category', 'Otros')}\n")
 
 
-def interactive_menu():
+def interactive_menu() -> None:
     print_banner()
     config = ConfigManager(DEFAULT_CONFIG_PATH)
-    
+
     current_source = Path(config.data.get("source_directory", str(DEFAULT_SANDBOX_DIR)))
     current_target = Path(config.data.get("target_directory", str(DEFAULT_SANDBOX_DIR)))
 
     while True:
         src_display = f"{current_source.resolve()}" if current_source.exists() else f"{current_source.resolve()} (no existe)"
         tgt_display = f"{current_target.resolve()}"
-        
+
         print(f"{Colors.BOLD}Carpeta de ORIGEN (dónde busca):{Colors.RESET}  {Colors.BLUE}{src_display}{Colors.RESET}")
         print(f"{Colors.BOLD}Carpeta de DESTINO (dónde mueve):{Colors.RESET} {Colors.GREEN}{tgt_display}{Colors.RESET}")
         print("\nOpciones disponibles:")
@@ -147,8 +146,8 @@ def interactive_menu():
             current_source = DEFAULT_SANDBOX_DIR
             current_target = DEFAULT_SANDBOX_DIR
         elif choice == "5":
-            new_src = input("Ingresa la ruta completa de la carpeta de ORIGEN: ").strip('"\' ')
-            new_tgt = input("Ingresa la ruta completa de la carpeta de DESTINO: ").strip('"\' ')
+            new_src = input("Ingresa la ruta completa de la carpeta de ORIGEN: ").strip("\"' ")
+            new_tgt = input("Ingresa la ruta completa de la carpeta de DESTINO: ").strip("\"' ")
             if new_src:
                 current_source = Path(new_src)
             if new_tgt:
@@ -161,12 +160,12 @@ def interactive_menu():
             break
         else:
             warning("Opción no válida. Ingresa un número del 0 al 6.")
-        
+
         input(f"\n{Colors.DIM}Presiona Enter para continuar...{Colors.RESET}")
         print("\n" + "-" * 50 + "\n")
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Organizador Inteligente de Archivos")
     parser.add_argument("--source", "-s", type=str, help="Ruta de la carpeta a escanear (origen)")
     parser.add_argument("--target", "-t", type=str, help="Ruta de la carpeta principal de destino")
@@ -180,7 +179,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def main():
+def main() -> None:
     args = parse_args()
     config = ConfigManager(Path(args.config))
 

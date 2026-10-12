@@ -8,11 +8,12 @@ sandbox_test_out/
 
 # Python Cache y Entornos
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
 .Python
 env/
 venv/
 .venv/
 .pytest_cache/
+.ruff_cache/
+.mypy_cache/
