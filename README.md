@@ -72,3 +72,48 @@ El corazón del programa es el archivo `config.json`. Desde ahí puedes controla
 4. **`categories`**: Diccionario de extensiones predeterminadas.
 
 ¡Puedes abrir el `config.json` en cualquier momento y añadir una nueva materia de la universidad o un nuevo tipo de archivo!
+
+---
+
+## 📂 Estructura del Proyecto
+
+```text
+organizador-archivos/
+├── main.py                  # Punto de entrada CLI e interfaz interactiva
+├── config.example.json      # Plantilla base de configuración (copiada automáticamente a config.json)
+├── pyproject.toml           # Configuración de empaquetado, Pytest, Ruff y Mypy
+├── README.md                # Documentación de uso y automatización
+├── CHANGELOG.md             # Historial detallado de versiones
+├── organizer/               # Paquete principal del motor de organización
+│   ├── __init__.py
+│   ├── config.py            # Carga, validación y categorías por defecto (DEFAULT_CONFIG)
+│   ├── engine.py            # Enrutamiento RegEx/Unicode, SHA-256 y ejecución de movimientos
+│   ├── history.py           # Registro transaccional (.organizer_history.json) y reversión (Undo)
+│   ├── sandbox.py           # Generador de archivos de prueba seguros
+│   └── ui.py                # Menú interactivo y formateo de reportes en consola
+└── tests/                   # Suite de pruebas automatizadas (Pytest)
+    ├── __init__.py
+    ├── test_config.py       # Pruebas de configuración y sincronización con config.example.json
+    └── test_engine.py       # Pruebas integrales de enrutamiento, colisiones, duplicados y Undo
+```
+
+---
+
+## 🧪 Calidad de Código y Pruebas (`Pytest`, `Ruff`, `Mypy`)
+
+```powershell
+# Ejecutar la suite de pruebas unitarias e integrales
+pytest
+
+# Verificar estilo y reglas de linting
+ruff check .
+
+# Verificar tipado estático estricto
+mypy main.py organizer tests
+```
+
+---
+
+## 📋 Registro de Versiones
+Consulta el historial completo de cambios en [CHANGELOG.md](./CHANGELOG.md).
+

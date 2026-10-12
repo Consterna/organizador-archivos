@@ -1,6 +1,6 @@
 [project]
 name = "organizador-archivos"
-version = "1.0.0"
+version = "1.1.0"
 description = "Herramienta CLI e interactiva para clasificar descargas por palabras clave (RegEx/Unicode), extensión, detección de duplicados SHA-256 y reversión segura (Undo)."
 readme = "README.md"
 requires-python = ">=3.10"
