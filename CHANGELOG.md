@@ -4,7 +4,7 @@ Todas las modificaciones importantes de **Organizador Inteligente de Archivos** 
 
 ## [1.1.0] - 2026-10-12 - Estandarización Profesional, Tipado Estricto y Sincronización de Categorías
 ### Cambios y Mejoras
-- **Configuración Estandarizada (`pyproject.toml`):** Se incorporó `pyproject.toml` con configuración unificada para `pytest`, `ruff` y `mypy` (Python 3.10+), además de `tests/__init__.py` y actualización de `.gitignore` para excluir cachés de herramientas (`.ruff_cache/`, `.mypy_cache/`, `*.db`).
+- **Configuración Estandarizada (`pyproject.toml`):** Se incorporó `pyproject.toml` con configuración unificada para `pytest`, `ruff` y `mypy` (Python 3.10+), además de `tests/__init__.py` y actualización de `.gitignore` para excluir cachés de herramientas (`.ruff_cache/`, `.mypy_cache/`, `*.py[cod]`).
 - **Sincronización de Categorías por Defecto (`organizer/config.py`):** Se alineó `DEFAULT_CONFIG` con `config.example.json` y `README.md`, incorporando `.log` en `Documentos`, `.mrpack` en `Comprimidos` y la categoría `"Juegos y Mods": [".jar"]`.
 - **Tipado Estático Moderno (`mypy` y `ruff`):** Se modernizaron las anotaciones de tipos (`str | None`, `Path | None`, `dict[str, Any]`) en `main.py` y en todos los módulos de `organizer/`, logrando `0` errores en `ruff check` y `mypy`.
 - **Ampliación de Suite de Pruebas (`tests/`):** Se añadieron pruebas unitarias en `tests/test_config.py` y pruebas integrales en `tests/test_engine.py` (`6 passed`), verificando enrutamiento por palabras clave con tildes y límites de palabra (`\b`), deduplicación `SHA-256`, resolución de colisiones en extensiones compuestas (`.tar.gz`) y reversión segura (`Undo`).
